@@ -1,6 +1,8 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 const publicRoutes = ["/", "/login", "/signup", "/sso-callback", "/__clerk"];
+const authEntryRoutes = ["/", "/login", "/signup"];
 
 function isPublicRoute(pathname: string) {
   return publicRoutes.some((route) =>
@@ -10,9 +12,27 @@ function isPublicRoute(pathname: string) {
   );
 }
 
+function isAuthEntryRoute(pathname: string) {
+  return authEntryRoutes.some((route) =>
+    route === "/"
+      ? pathname === route
+      : pathname === route || pathname.startsWith(`${route}/`),
+  );
+}
+
 export default clerkMiddleware(async (auth, request) => {
-  if (!isPublicRoute(request.nextUrl.pathname)) {
+  const pathname = request.nextUrl.pathname;
+
+  if (!isPublicRoute(pathname)) {
     await auth.protect({ unauthenticatedUrl: "/login" });
+    return;
+  }
+
+  if (isAuthEntryRoute(pathname)) {
+    const { userId } = await auth();
+    if (userId) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
   }
 });
 
