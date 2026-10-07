@@ -35,6 +35,9 @@ importers:
       react-hook-form:
         specifier: ^7.89.0
         version: 7.89.0(@types/react@19.3.0)(react@19.2.8)
+      types:
+        specifier: link:@clerk/shared/types
+        version: link:@clerk/shared/types
       zod:
         specifier: ^4.6.5
         version: 4.6.5

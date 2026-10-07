@@ -22,6 +22,7 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-hook-form": "^7.89.0",
+    "types": "link:@clerk/shared/types",
     "zod": "^4.6.5"
   },
   "devDependencies": {
