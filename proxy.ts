@@ -1,6 +1,20 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 
-export default clerkMiddleware();
+const publicRoutes = ["/", "/login", "/signup", "/sso-callback", "/__clerk"];
+
+function isPublicRoute(pathname: string) {
+  return publicRoutes.some((route) =>
+    route === "/"
+      ? pathname === route
+      : pathname === route || pathname.startsWith(`${route}/`),
+  );
+}
+
+export default clerkMiddleware(async (auth, request) => {
+  if (!isPublicRoute(request.nextUrl.pathname)) {
+    await auth.protect({ unauthenticatedUrl: "/login" });
+  }
+});
 
 export const config = {
   matcher: [

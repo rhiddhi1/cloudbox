@@ -39,8 +39,9 @@ export default function SignInForm() {
   const [verificationCode, setVerificationCode] = useState("");
   const [requiresVerification, setRequiresVerification] = useState(false);
   const [verificationEmail, setVerificationEmail] = useState("");
-  const [verificationEmailAddressId, setVerificationEmailAddressId] =
-    useState<string | null>(null);
+  const [verificationEmailAddressId, setVerificationEmailAddressId] = useState<
+    string | null
+  >(null);
   const [isResending, setIsResending] = useState(false);
 
   const { register, handleSubmit } = useForm({
@@ -96,7 +97,9 @@ export default function SignInForm() {
     }
   };
 
-  const handleVerificationSubmit = async (event: FormEvent<HTMLFormElement>) => {
+  const handleVerificationSubmit = async (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
     if (!isLoaded || verificationCode.length !== 6 || isSubmitting) return;
 
