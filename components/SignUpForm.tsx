@@ -204,7 +204,9 @@ export default function SignUpForm() {
           )}
           <Button
             type="submit"
-            disabled={!isLoaded || isSubmitting || verificationCode.length !== 6}
+            disabled={
+              !isLoaded || isSubmitting || verificationCode.length !== 6
+            }
           >
             {isSubmitting ? "Verifying..." : "Verify email"}
           </Button>
@@ -355,7 +357,7 @@ export default function SignUpForm() {
               </Field>
               <FieldDescription className="text-center">
                 Already have an account?{" "}
-                <NextLink href="/sign-in" className="underline">
+                <NextLink href="/login" className="underline">
                   Sign in
                 </NextLink>
               </FieldDescription>
