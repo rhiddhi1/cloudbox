@@ -23,6 +23,12 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.9.1
         version: 5.9.1(ajv-formats@2.1.1(ajv@8.20.0))(ajv@8.20.0)(react-hook-form@7.89.0(@types/react@19.3.0)(react@19.2.8))(zod@4.6.5)
+      '@imagekit/next':
+        specifier: ^2.1.6
+        version: 2.1.6(next@16.3.8(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))
+      '@imagekit/nodejs':
+        specifier: ^7.12.1
+        version: 7.12.1
       '@neondatabase/serverless':
         specifier: ^1.2.0
         version: 1.2.0
@@ -823,6 +829,17 @@ packages:
   '@humanwhocodes/retry@0.4.3':
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
+
+  '@imagekit/javascript@5.5.1':
+    resolution: {integrity: sha512-eGEbZGKCqX/rC1iwceb1pLg5oHJhGkH68+i6JhFFSDktrdCMC/475a5R0Obtnk6IbIc4eV+1vynkK4WZFeLWEQ==}
+
+  '@imagekit/next@2.1.6':
+    resolution: {integrity: sha512-VQH89cgppjscajV1R+ZN5cydq3NFyiL/5ytYZrZTiWIappIwW2DG2juHjRVIIZlz0Rc7nLZ5qfNC2GNkzjQiLQ==}
+    peerDependencies:
+      next: '>= 13'
+
+  '@imagekit/nodejs@7.12.1':
+    resolution: {integrity: sha512-4eIg2llqpes+KbJ5AJSQgKp27b2oGR32wm/XckYsqPBJxpUYRQm0sBPRtmXdmV31hWG48J6d7NvKvW9Ylk3XdA==}
 
   '@img/colour@1.1.0':
     resolution: {integrity: sha512-Td76q7j57o/tLVdgS746cYARfSyxk8iEfRxewL9h4OMzYhbW4TAcppl0mT4eyqXddh6L/jwoM75mo7ixa/pCeQ==}
@@ -4422,6 +4439,17 @@ snapshots:
   '@humanwhocodes/module-importer@1.0.1': {}
 
   '@humanwhocodes/retry@0.4.3': {}
+
+  '@imagekit/javascript@5.5.1': {}
+
+  '@imagekit/next@2.1.6(next@16.3.8(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))':
+    dependencies:
+      '@imagekit/javascript': 5.5.1
+      next: 16.3.8(@babel/core@7.29.7)(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+
+  '@imagekit/nodejs@7.12.1':
+    dependencies:
+      standardwebhooks: 1.1.1
 
   '@img/colour@1.1.0':
     optional: true
