@@ -1,0 +1,91 @@
+<svg width="900" height="900" viewBox="0 0 900 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="450" y1="0" x2="450" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FBFF"/>
+      <stop offset="1" stop-color="#EEF5FF"/>
+    </linearGradient>
+    <linearGradient id="folder" x1="300" y1="300" x2="650" y2="650" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4F8CFF"/>
+      <stop offset="1" stop-color="#1764E8"/>
+    </linearGradient>
+    <linearGradient id="folderTop" x1="280" y1="330" x2="630" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6EA2FF"/>
+      <stop offset="1" stop-color="#2873EF"/>
+    </linearGradient>
+    <filter id="shadow" x="150" y="270" width="620" height="480" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="28" stdDeviation="28" flood-color="#1D5FD7" flood-opacity=".18"/>
+    </filter>
+    <filter id="cardShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#315FAF" flood-opacity=".16"/>
+    </filter>
+  </defs>
+
+  <rect width="900" height="900" rx="36" fill="url(#bg)"/>
+
+  <!-- decorative orbit -->
+  <path d="M150 430C145 315 255 230 390 238" stroke="#C9DCFF" stroke-width="6" stroke-linecap="round"/>
+  <path d="M750 430C755 315 645 230 510 238" stroke="#C9DCFF" stroke-width="6" stroke-linecap="round"/>
+  <path d="M154 430L177 415L169 444" fill="#C9DCFF"/>
+  <path d="M746 430L723 415L731 444" fill="#C9DCFF"/>
+
+  <!-- floating document -->
+  <g filter="url(#cardShadow)" transform="rotate(-8 300 315)">
+    <rect x="245" y="235" width="126" height="150" rx="22" fill="#5B9BFF"/>
+    <rect x="275" y="275" width="66" height="10" rx="5" fill="white" fill-opacity=".85"/>
+    <rect x="275" y="302" width="78" height="10" rx="5" fill="white" fill-opacity=".55"/>
+    <rect x="275" y="329" width="56" height="10" rx="5" fill="white" fill-opacity=".55"/>
+  </g>
+
+  <!-- floating image -->
+  <g filter="url(#cardShadow)" transform="rotate(7 475 260)">
+    <rect x="408" y="190" width="142" height="122" rx="24" fill="#9B82F7"/>
+    <circle cx="443" cy="228" r="13" fill="white" fill-opacity=".9"/>
+    <path d="M428 282L463 247L486 270L509 246L535 282H428Z" fill="white" fill-opacity=".8"/>
+  </g>
+
+  <!-- floating video -->
+  <g filter="url(#cardShadow)" transform="rotate(8 635 330)">
+    <rect x="575" y="265" width="125" height="104" rx="22" fill="#F36F7B"/>
+    <path d="M624 292L624 342L665 317L624 292Z" fill="white" fill-opacity=".9"/>
+  </g>
+
+  <!-- floating spreadsheet -->
+  <g filter="url(#cardShadow)" transform="rotate(12 690 445)">
+    <rect x="648" y="386" width="112" height="136" rx="22" fill="#48C7B8"/>
+    <rect x="676" y="421" width="56" height="9" rx="4.5" fill="white" fill-opacity=".85"/>
+    <rect x="676" y="446" width="43" height="9" rx="4.5" fill="white" fill-opacity=".6"/>
+    <rect x="676" y="471" width="58" height="9" rx="4.5" fill="white" fill-opacity=".6"/>
+  </g>
+
+  <!-- main folder -->
+  <g filter="url(#shadow)">
+    <path d="M218 405C218 376 241 353 270 353H387L430 389H648C676 389 699 412 699 440V586C699 618 673 644 641 644H276C244 644 218 618 218 586V405Z" fill="url(#folderTop)"/>
+    <path d="M202 449C202 420 225 397 254 397H647C679 397 704 423 699 455L676 598C672 625 649 644 622 644H258C225 644 202 617 202 584V449Z" fill="url(#folder)"/>
+    <path d="M202 450C202 420 225 397 254 397H647C679 397 704 423 699 455L695 481H202V450Z" fill="#5D99FF" fill-opacity=".9"/>
+  </g>
+
+  <!-- cloud on folder -->
+  <g filter="url(#cardShadow)">
+    <circle cx="430" cy="516" r="55" fill="white"/>
+    <circle cx="486" cy="496" r="72" fill="white"/>
+    <circle cx="548" cy="520" r="48" fill="white"/>
+    <rect x="423" y="500" width="147" height="58" rx="29" fill="white"/>
+  </g>
+
+  <!-- bottom clouds -->
+  <g opacity=".98">
+    <circle cx="207" cy="620" r="47" fill="white"/>
+    <circle cx="248" cy="596" r="60" fill="white"/>
+    <circle cx="301" cy="622" r="42" fill="white"/>
+    <rect x="201" y="612" width="115" height="45" rx="22.5" fill="white"/>
+  </g>
+  <g opacity=".98">
+    <circle cx="628" cy="626" r="45" fill="white"/>
+    <circle cx="671" cy="598" r="62" fill="white"/>
+    <circle cx="728" cy="626" r="42" fill="white"/>
+    <rect x="625" y="613" width="120" height="48" rx="24" fill="white"/>
+  </g>
+
+  <!-- subtle ground -->
+  <ellipse cx="456" cy="672" rx="300" ry="26" fill="#AFCBFA" fill-opacity=".28"/>
+</svg>
