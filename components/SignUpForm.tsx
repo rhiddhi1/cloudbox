@@ -357,7 +357,7 @@ export default function SignUpForm() {
               </Field>
               <FieldDescription className="text-center">
                 Already have an account?{" "}
-                <NextLink href="/login" className="underline">
+                <NextLink href="/sign-in" className="underline">
                   Sign in
                 </NextLink>
               </FieldDescription>
