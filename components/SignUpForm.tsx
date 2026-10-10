@@ -22,7 +22,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { signUpSchema } from "@/schemas/signUpSchema";
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import NextLink from "next/link";
 
@@ -38,6 +38,7 @@ export default function SignUpForm() {
   const router = useRouter();
   const [verifying, setVerifying] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isOAuthSubmitting, setIsOAuthSubmitting] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [verificationCode, setVerificationCode] = useState("");
   const [verificationError, setVerificationError] = useState<string | null>(
@@ -47,6 +48,17 @@ export default function SignUpForm() {
   const [isResending, setIsResending] = useState(false);
 
   const { isLoaded, signUp, setActive } = useSignUp();
+
+  useEffect(() => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted && isOAuthSubmitting) {
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, [isOAuthSubmitting]);
 
   const {
     register,
@@ -147,6 +159,7 @@ export default function SignUpForm() {
     if (!isLoaded || isSubmitting) return;
 
     setIsSubmitting(true);
+    setIsOAuthSubmitting(true);
     setAuthError(null);
 
     try {
@@ -162,6 +175,7 @@ export default function SignUpForm() {
           : "Could not start social sign-up. Please try again.",
       );
       setIsSubmitting(false);
+      setIsOAuthSubmitting(false);
     }
   };
 
@@ -304,14 +318,16 @@ export default function SignUpForm() {
                   </p>
                 )}
                 <Button type="submit" disabled={!isLoaded || isSubmitting}>
-                  {isSubmitting ? "Creating account..." : "Create Account"}
+                  {isSubmitting && !isOAuthSubmitting
+                    ? "Creating account..."
+                    : "Create Account"}
                 </Button>
               </Field>
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
               </FieldSeparator>
               <Field className="grid grid-cols-3 gap-4">
-                {/* <Button
+                <Button
                   variant="outline"
                   type="button"
                   disabled={!isLoaded || isSubmitting}
@@ -324,7 +340,7 @@ export default function SignUpForm() {
                     />
                   </svg>
                   <span className="sr-only">Sign up with Apple</span>
-                </Button> */}
+                </Button>
                 <Button
                   variant="outline"
                   type="button"
