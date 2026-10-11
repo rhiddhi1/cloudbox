@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { upload } from "@imagekit/next";
+import { useRouter } from "next/navigation";
 import {
   Card,
   CardDescription,
@@ -15,6 +16,7 @@ type SectionCardsProps = {
 };
 
 export function SectionCards({ userId }: SectionCardsProps) {
+  const router = useRouter();
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
@@ -108,6 +110,7 @@ export function SectionCards({ userId }: SectionCardsProps) {
 
       form.reset();
       setUploadSuccess(true);
+      router.refresh();
     } catch (error) {
       setUploadError(
         error instanceof Error ? error.message : "File upload failed.",
@@ -153,6 +156,7 @@ export function SectionCards({ userId }: SectionCardsProps) {
 
       form.reset();
       setFolderSuccess(true);
+      router.refresh();
     } catch (error) {
       setFolderError(
         error instanceof Error ? error.message : "Folder creation failed.",

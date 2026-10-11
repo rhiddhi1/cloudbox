@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Download, Eye, Star, StarOff, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -54,6 +54,10 @@ export function DataTable({ data: initialData }: { data: RecentItem[] }) {
   const [data, setData] = useState(initialData);
   const [pendingItemId, setPendingItemId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setData(initialData);
+  }, [initialData]);
 
   async function toggleStar(item: RecentItem) {
     setPendingItemId(item.id);
