@@ -1,11 +1,4 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { FoldersTable } from "@/components/folders-table";
 import { db } from "@/lib/db";
 import { files } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
@@ -25,9 +18,16 @@ export default async function FoldersPage() {
       name: files.name,
       size: files.size,
       type: files.type,
+      isStarred: files.isStarred,
     })
     .from(files)
-    .where(and(eq(files.userId, userId), eq(files.isFolder, true)));
+    .where(
+      and(
+        eq(files.userId, userId),
+        eq(files.isFolder, true),
+        eq(files.isTrash, false),
+      ),
+    );
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:p-6">
@@ -38,41 +38,7 @@ export default async function FoldersPage() {
         </p>
       </div>
 
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Name</TableHead>
-              <TableHead>Size</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>ID</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {folders.length > 0 ? (
-              folders.map((folder) => (
-                <TableRow key={folder.id}>
-                  <TableCell className="font-medium">{folder.name}</TableCell>
-                  <TableCell>{folder.size}</TableCell>
-                  <TableCell>{folder.type}</TableCell>
-                  <TableCell className="font-mono text-xs">
-                    {folder.id}
-                  </TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  className="h-24 text-center text-muted-foreground"
-                  colSpan={4}
-                >
-                  No folders found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+      <FoldersTable folders={folders} />
     </main>
   );
 }
