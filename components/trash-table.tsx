@@ -4,6 +4,14 @@ import { useState } from "react";
 import { RotateCcw, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Table,
   TableBody,
   TableCell,
@@ -51,6 +59,7 @@ function formatFileSize(size: number) {
 export function TrashTable({ files: initialFiles }: { files: TrashedEntry[] }) {
   const [files, setFiles] = useState(initialFiles);
   const [isEmptying, setIsEmptying] = useState(false);
+  const [isEmptyDialogOpen, setIsEmptyDialogOpen] = useState(false);
   const [pendingFileId, setPendingFileId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
 
@@ -120,14 +129,6 @@ export function TrashTable({ files: initialFiles }: { files: TrashedEntry[] }) {
   }
 
   async function emptyTrash() {
-    if (
-      !window.confirm(
-        "Permanently delete every item in trash? This action cannot be undone.",
-      )
-    ) {
-      return;
-    }
-
     setIsEmptying(true);
     setActionError(null);
 
@@ -142,6 +143,7 @@ export function TrashTable({ files: initialFiles }: { files: TrashedEntry[] }) {
       }
 
       setFiles([]);
+      setIsEmptyDialogOpen(false);
     } catch (error) {
       setActionError(
         error instanceof Error ? error.message : "Could not empty the trash.",
@@ -154,14 +156,46 @@ export function TrashTable({ files: initialFiles }: { files: TrashedEntry[] }) {
   return (
     <div className="space-y-3">
       <div className="flex justify-end">
-        <Button
-          variant="destructive"
-          onClick={() => void emptyTrash()}
-          disabled={isEmptying || files.length === 0 || pendingFileId !== null}
+        <AlertDialog
+          open={isEmptyDialogOpen}
+          onOpenChange={(open) => setIsEmptyDialogOpen(open)}
         >
-          <Trash2 />
-          {isEmptying ? "Emptying..." : "Empty trash"}
-        </Button>
+          <Button
+            variant="destructive"
+            onClick={() => setIsEmptyDialogOpen(true)}
+            disabled={
+              isEmptying || files.length === 0 || pendingFileId !== null
+            }
+          >
+            <Trash2 />
+            Empty trash
+          </Button>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Empty trash?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Permanently delete every item in trash? This action cannot be
+                undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setIsEmptyDialogOpen(false)}
+                disabled={isEmptying}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => void emptyTrash()}
+                disabled={isEmptying}
+              >
+                {isEmptying ? "Emptying..." : "Delete forever"}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
       {actionError && (
         <p className="text-sm text-destructive" role="alert">

@@ -9,7 +9,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { CirclePlusIcon, File, MailIcon } from "lucide-react";
+import {
+  CirclePlusIcon,
+  File,
+  Image,
+  MailIcon,
+  Pencil,
+  Plus,
+} from "lucide-react";
 
 export function NavMain({
   items,
@@ -46,14 +53,15 @@ export function NavMain({
               <CirclePlusIcon />
               <span>Quick Create</span>
             </SidebarMenuButton>
-            {/* <Button
+            <Button
               size="icon"
               className="size-8 group-data-[collapsible=icon]:opacity-0"
               variant="outline"
+              onClick={() => router.push("/dashboard")}
             >
-              <File />
+              <Plus />
               <span className="sr-only">Inbox</span>
-            </Button> */}
+            </Button>
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>

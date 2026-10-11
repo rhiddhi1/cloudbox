@@ -33,6 +33,7 @@ import {
   Star,
   Trash,
   File,
+  Folders,
 } from "lucide-react";
 
 const data = {
@@ -51,7 +52,7 @@ const data = {
     {
       title: "Folders",
       url: "#",
-      icon: <LayoutDashboardIcon />,
+      icon: <Folders />,
       onClick: "/dashboard/folders",
     },
     {
