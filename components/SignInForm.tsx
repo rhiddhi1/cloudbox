@@ -302,7 +302,7 @@ export default function SignInForm() {
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
               </FieldSeparator>
-              <Field className="grid grid-cols-3 gap-4">
+              <Field className="mx-auto grid w-full max-w-40 grid-cols-2 gap-4">
                 <Button
                   variant="outline"
                   type="button"
@@ -319,7 +319,6 @@ export default function SignInForm() {
                 <Button
                   variant="outline"
                   type="button"
-                  className="col-start-2"
                   onClick={() => handleOAuthSignIn("oauth_google")}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

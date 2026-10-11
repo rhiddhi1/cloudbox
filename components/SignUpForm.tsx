@@ -326,7 +326,7 @@ export default function SignUpForm() {
               <FieldSeparator className="*:data-[slot=field-separator-content]:bg-card">
                 Or continue with
               </FieldSeparator>
-              <Field className="grid grid-cols-3 gap-4">
+              <Field className="mx-auto grid w-full max-w-40 grid-cols-2 gap-4">
                 <Button
                   variant="outline"
                   type="button"
@@ -344,7 +344,6 @@ export default function SignUpForm() {
                 <Button
                   variant="outline"
                   type="button"
-                  className="col-start-2"
                   disabled={!isLoaded || isSubmitting}
                   onClick={() => handleOAuthSignUp("oauth_google")}
                 >
