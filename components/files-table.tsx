@@ -103,8 +103,6 @@ export function FilesTable({ files: initialFiles }: FilesTableProps) {
   }
 
   async function moveToTrash(fileId: string) {
-    if (!window.confirm("Move this file to trash?")) return;
-
     setPendingFileId(fileId);
     setActionError(null);
 

@@ -78,10 +78,6 @@ export function FoldersTable({ folders: initialFolders }: { folders: FolderRow[]
   }
 
   async function moveToTrash(folder: FolderRow) {
-    if (!window.confirm(`Move "${folder.name}" and its contents to trash?`)) {
-      return;
-    }
-
     setPendingFolderId(folder.id);
     setActionError(null);
 

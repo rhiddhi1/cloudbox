@@ -85,9 +85,6 @@ export function StarredTable({
   }
 
   async function moveToTrash(file: StarredEntry) {
-    const itemLabel = file.isFolder ? "folder and its contents" : "file";
-    if (!window.confirm(`Move this ${itemLabel} to trash?`)) return;
-
     setPendingFileId(file.id);
     setActionError(null);
 
