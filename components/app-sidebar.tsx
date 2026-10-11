@@ -32,6 +32,7 @@ import {
   CommandIcon,
   Star,
   Trash,
+  File,
 } from "lucide-react";
 
 const data = {
@@ -41,6 +42,12 @@ const data = {
     avatar: "/avatars/shadcn.jpg",
   },
   navMain: [
+    {
+      title: "All Files",
+      url: "#",
+      icon: <File />,
+      onClick: "/dashboard/files",
+    },
     {
       title: "Folders",
       url: "#",
