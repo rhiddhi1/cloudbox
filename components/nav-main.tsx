@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   SidebarGroup,
@@ -17,8 +18,21 @@ export function NavMain({
     title: string;
     url: string;
     icon?: React.ReactNode;
+    onClick: string;
   }[];
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  function navigateToItem(path: string) {
+    if (pathname === path) {
+      router.refresh();
+      return;
+    }
+
+    router.push(path);
+  }
+
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -27,24 +41,28 @@ export function NavMain({
             <SidebarMenuButton
               tooltip="Quick Create"
               className="min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground"
+              onClick={() => router.push("/dashboard")}
             >
               <CirclePlusIcon />
               <span>Quick Create</span>
             </SidebarMenuButton>
-            <Button
+            {/* <Button
               size="icon"
               className="size-8 group-data-[collapsible=icon]:opacity-0"
               variant="outline"
             >
               <File />
               <span className="sr-only">Inbox</span>
-            </Button>
+            </Button> */}
           </SidebarMenuItem>
         </SidebarMenu>
         <SidebarMenu>
           {items.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton tooltip={item.title}>
+              <SidebarMenuButton
+                tooltip={item.title}
+                onClick={() => navigateToItem(item.onClick)}
+              >
                 {item.icon}
                 <span>{item.title}</span>
               </SidebarMenuButton>

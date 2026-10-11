@@ -34,7 +34,6 @@ import {
   Trash,
 } from "lucide-react";
 
-
 const data = {
   user: {
     name: "shadcn",
@@ -46,16 +45,19 @@ const data = {
       title: "Folders",
       url: "#",
       icon: <LayoutDashboardIcon />,
+      onClick: "/dashboard/folders",
     },
     {
       title: "Starred",
       url: "#",
       icon: <Star />,
+      onClick: "/dashboard/starred",
     },
     {
       title: "Trash",
       url: "#",
       icon: <Trash />,
+      onClick: "/dashboard/trash",
     },
     // {
     //   title: "Projects",

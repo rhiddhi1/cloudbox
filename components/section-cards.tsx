@@ -1,111 +1,251 @@
-"use client"
+"use client";
 
-import { Badge } from "@/components/ui/badge"
+import { useState, type FormEvent } from "react";
+import { upload } from "@imagekit/next";
 import {
   Card,
-  CardAction,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { TrendingUpIcon, TrendingDownIcon } from "lucide-react"
+} from "@/components/ui/card";
+import { FolderPlusIcon, UploadIcon } from "lucide-react";
 
-export function SectionCards() {
+type SectionCardsProps = {
+  userId: string;
+};
+
+export function SectionCards({ userId }: SectionCardsProps) {
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [isCreatingFolder, setIsCreatingFolder] = useState(false);
+  const [folderError, setFolderError] = useState<string | null>(null);
+  const [folderSuccess, setFolderSuccess] = useState(false);
+
+  async function handleUpload(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setUploadError(null);
+    setUploadSuccess(false);
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const file = formData.get("file");
+    if (!(file instanceof File) || file.size === 0) {
+      setUploadError("Choose a file to upload.");
+      return;
+    }
+
+    setIsUploading(true);
+
+    try {
+      const authResponse = await fetch("/api/imagekit-auth");
+      const authData: unknown = await authResponse.json();
+      if (!authResponse.ok) {
+        const message =
+          typeof authData === "object" &&
+          authData !== null &&
+          "error" in authData &&
+          typeof authData.error === "string"
+            ? authData.error
+            : "Could not authorize the file upload.";
+        throw new Error(message);
+      }
+
+      if (
+        typeof authData !== "object" ||
+        authData === null ||
+        !("token" in authData) ||
+        typeof authData.token !== "string" ||
+        !("signature" in authData) ||
+        typeof authData.signature !== "string" ||
+        !("expire" in authData) ||
+        typeof authData.expire !== "number" ||
+        !("publicKey" in authData) ||
+        typeof authData.publicKey !== "string"
+      ) {
+        throw new Error("The upload authorization response is invalid.");
+      }
+
+      const imageKitFile = await upload({
+        file,
+        fileName: file.name,
+        token: authData.token,
+        signature: authData.signature,
+        expire: authData.expire,
+        publicKey: authData.publicKey,
+      });
+
+      if (!imageKitFile.url || !imageKitFile.filePath) {
+        throw new Error("ImageKit did not return a file URL and path.");
+      }
+
+      const saveResponse = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          ImageKit: {
+            name: file.name,
+            path: imageKitFile.filePath,
+            size: file.size,
+            type: file.type || "application/octet-stream",
+            url: imageKitFile.url,
+            thumbnail_url: imageKitFile.thumbnailUrl,
+          },
+        }),
+      });
+      const savedFile: unknown = await saveResponse.json();
+      if (!saveResponse.ok) {
+        const message =
+          typeof savedFile === "object" &&
+          savedFile !== null &&
+          "error" in savedFile &&
+          typeof savedFile.error === "string"
+            ? savedFile.error
+            : "Could not save the uploaded file.";
+        throw new Error(message);
+      }
+
+      form.reset();
+      setUploadSuccess(true);
+    } catch (error) {
+      setUploadError(
+        error instanceof Error ? error.message : "File upload failed.",
+      );
+    } finally {
+      setIsUploading(false);
+    }
+  }
+
+  async function handleCreateFolder(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setFolderError(null);
+    setFolderSuccess(false);
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const name = formData.get("name");
+    if (typeof name !== "string" || name.trim() === "") {
+      setFolderError("Enter a folder name.");
+      return;
+    }
+
+    setIsCreatingFolder(true);
+
+    try {
+      const response = await fetch("/api/folders/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), userId }),
+      });
+      const result: unknown = await response.json();
+
+      if (!response.ok) {
+        const message =
+          typeof result === "object" &&
+          result !== null &&
+          "error" in result &&
+          typeof result.error === "string"
+            ? result.error
+            : "Could not create the folder.";
+        throw new Error(message);
+      }
+
+      form.reset();
+      setFolderSuccess(true);
+    } catch (error) {
+      setFolderError(
+        error instanceof Error ? error.message : "Folder creation failed.",
+      );
+    } finally {
+      setIsCreatingFolder(false);
+    }
+  }
+
   return (
-    <div className="grid grid-cols-1 gap-4 px-4 *:data-[slot=card]:bg-linear-to-t *:data-[slot=card]:from-primary/5 *:data-[slot=card]:to-card *:data-[slot=card]:shadow-xs lg:px-6 @xl/main:grid-cols-2 @5xl/main:grid-cols-4 dark:*:data-[slot=card]:bg-card">
-      <Card className="@container/card">
+    <div className="grid grid-cols-1 gap-4 px-4 lg:grid-cols-2 lg:px-6">
+      <Card>
         <CardHeader>
-          <CardDescription>Total Revenue</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            $1,250.00
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <TrendingUpIcon
-              />
-              +12.5%
-            </Badge>
-          </CardAction>
+          <UploadIcon
+            className="mb-2 size-5 text-muted-foreground"
+            aria-hidden="true"
+          />
+          <CardTitle>Upload file</CardTitle>
+          <CardDescription>Select a file to upload.</CardDescription>
         </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Trending up this month{" "}
-            <TrendingUpIcon className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Visitors for the last 6 months
-          </div>
-        </CardFooter>
+        <form
+          onSubmit={handleUpload}
+          className="flex flex-col gap-4 px-6 pb-6"
+        >
+          <input
+            aria-label="File to upload"
+            className="block w-full text-sm text-muted-foreground file:mr-4 file:rounded-md file:border-0 file:bg-primary file:px-4 file:py-2 file:font-medium file:text-primary-foreground"
+            name="file"
+            required
+            type="file"
+            disabled={isUploading}
+          />
+          {uploadError && (
+            <p className="text-sm text-destructive" role="alert">
+              {uploadError}
+            </p>
+          )}
+          {uploadSuccess && (
+            <p className="text-sm text-muted-foreground" role="status">
+              File uploaded and saved.
+            </p>
+          )}
+          <button
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+            disabled={isUploading}
+            type="submit"
+          >
+            {isUploading ? "Uploading..." : "Upload file"}
+          </button>
+        </form>
       </Card>
-      <Card className="@container/card">
+
+      <Card>
         <CardHeader>
-          <CardDescription>New Customers</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            1,234
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <TrendingDownIcon
-              />
-              -20%
-            </Badge>
-          </CardAction>
+          <FolderPlusIcon
+            className="mb-2 size-5 text-muted-foreground"
+            aria-hidden="true"
+          />
+          <CardTitle>Create folder</CardTitle>
+          <CardDescription>Choose a name for your new folder.</CardDescription>
         </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Down 20% this period{" "}
-            <TrendingDownIcon className="size-4" />
-          </div>
-          <div className="text-muted-foreground">
-            Acquisition needs attention
-          </div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Active Accounts</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            45,678
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <TrendingUpIcon
-              />
-              +12.5%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Strong user retention{" "}
-            <TrendingUpIcon className="size-4" />
-          </div>
-          <div className="text-muted-foreground">Engagement exceed targets</div>
-        </CardFooter>
-      </Card>
-      <Card className="@container/card">
-        <CardHeader>
-          <CardDescription>Growth Rate</CardDescription>
-          <CardTitle className="text-2xl font-semibold tabular-nums @[250px]/card:text-3xl">
-            4.5%
-          </CardTitle>
-          <CardAction>
-            <Badge variant="outline">
-              <TrendingUpIcon
-              />
-              +4.5%
-            </Badge>
-          </CardAction>
-        </CardHeader>
-        <CardFooter className="flex-col items-start gap-1.5 text-sm">
-          <div className="line-clamp-1 flex gap-2 font-medium">
-            Steady performance increase{" "}
-            <TrendingUpIcon className="size-4" />
-          </div>
-          <div className="text-muted-foreground">Meets growth projections</div>
-        </CardFooter>
+        <form
+          onSubmit={handleCreateFolder}
+          className="flex flex-col gap-4 px-6 pb-6"
+        >
+          <input
+            aria-label="Folder name"
+            className="h-10 rounded-md border border-input bg-background px-3 text-sm"
+            name="name"
+            placeholder="Folder name"
+            required
+            type="text"
+            disabled={isCreatingFolder}
+          />
+          {folderError && (
+            <p className="text-sm text-destructive" role="alert">
+              {folderError}
+            </p>
+          )}
+          {folderSuccess && (
+            <p className="text-sm text-muted-foreground" role="status">
+              Folder created.
+            </p>
+          )}
+          <button
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
+            disabled={isCreatingFolder}
+            type="submit"
+          >
+            {isCreatingFolder ? "Creating..." : "Create folder"}
+          </button>
+        </form>
       </Card>
     </div>
-  )
+  );
 }
