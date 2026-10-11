@@ -20,23 +20,31 @@ function isAuthEntryRoute(pathname: string) {
   );
 }
 
-export default clerkMiddleware(async (auth, request) => {
-  const pathname = request.nextUrl.pathname;
+export default clerkMiddleware(
+  async (auth, request) => {
+    const pathname = request.nextUrl.pathname;
 
-  if (!isPublicRoute(pathname)) {
-    await auth.protect({
-      unauthenticatedUrl: new URL("/sign-in", request.url).toString(),
-    });
-    return;
-  }
-
-  if (isAuthEntryRoute(pathname)) {
-    const { userId } = await auth();
-    if (userId) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+    if (!isPublicRoute(pathname)) {
+      await auth.protect({
+        unauthenticatedUrl: new URL("/sign-in", request.url).toString(),
+      });
+      return;
     }
-  }
-});
+
+    if (isAuthEntryRoute(pathname)) {
+      const { userId } = await auth();
+      if (userId) {
+        return NextResponse.redirect(new URL("/dashboard", request.url));
+      }
+    }
+  },
+  {
+    frontendApiProxy: {
+      enabled: true,
+      path: "/__clerk",
+    },
+  },
+);
 
 export const config = {
   matcher: [
