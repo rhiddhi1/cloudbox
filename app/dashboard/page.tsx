@@ -1,21 +1,21 @@
+import { SectionCards } from "@/components/section-cards";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { UserButton } from "@clerk/nextjs";
 
-export default async function DashboardPage() {
+export default async function Page() {
   const { userId } = await auth();
 
   if (!userId) {
-    redirect("/login");
+    redirect("/sign-in");
   }
 
   return (
-    <main className="flex min-h-svh items-center justify-center p-6">
-      <section className="text-center">
-        <UserButton />
-        <h1 className="text-3xl font-bold">Welcome to Droply</h1>
-        <p className="mt-2 text-muted-foreground">Your account is ready.</p>
-      </section>
-    </main>
+    <div className="@container/main flex flex-1 flex-col gap-2">
+      <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+        <SectionCards />
+        <div className="px-4 lg:px-6">{/* <ChartAreaInteractive /> */}</div>
+        {/* <DataTable data={data} /> */}
+      </div>
+    </div>
   );
 }
