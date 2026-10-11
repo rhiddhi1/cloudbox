@@ -86,10 +86,11 @@ export function FilesTable({ files: initialFiles }: FilesTableProps) {
         throw new Error("The star update response was invalid.");
       }
 
+      const isStarred = result.isStarred;
       setFiles((currentFiles) =>
         currentFiles.map((file) =>
           file.id === fileId
-            ? { ...file, isStarred: result.isStarred }
+            ? { ...file, isStarred }
             : file,
         ),
       );
@@ -166,6 +167,7 @@ export function FilesTable({ files: initialFiles }: FilesTableProps) {
                           title="View"
                           variant="ghost"
                           size="icon"
+                          nativeButton={false}
                           render={
                             <a
                               href={file.fileUrl}
@@ -181,6 +183,7 @@ export function FilesTable({ files: initialFiles }: FilesTableProps) {
                           title="Download"
                           variant="ghost"
                           size="icon"
+                          nativeButton={false}
                           render={
                             <a
                               href={downloadUrl.toString()}

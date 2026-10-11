@@ -154,6 +154,7 @@ export function StarredTable({
                               title="View"
                               variant="ghost"
                               size="icon"
+                              nativeButton={false}
                               render={
                                 <a
                                   href={file.fileUrl}
@@ -169,6 +170,7 @@ export function StarredTable({
                               title="Download"
                               variant="ghost"
                               size="icon"
+                              nativeButton={false}
                               render={
                                 <a
                                   href={downloadUrl.toString()}

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Fragment } from "react";
 import { usePathname } from "next/navigation";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -38,16 +39,18 @@ export function SiteHeader() {
         <Breadcrumb>
           <BreadcrumbList>
             {breadcrumbs.map((breadcrumb, index) => (
-              <BreadcrumbItem key={breadcrumb.href}>
+              <Fragment key={breadcrumb.href}>
                 {index > 0 && <BreadcrumbSeparator />}
-                {index === breadcrumbs.length - 1 ? (
-                  <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
-                ) : (
-                  <BreadcrumbLink render={<Link href={breadcrumb.href} />}>
-                    {breadcrumb.label}
-                  </BreadcrumbLink>
-                )}
-              </BreadcrumbItem>
+                <BreadcrumbItem>
+                  {index === breadcrumbs.length - 1 ? (
+                    <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
+                  ) : (
+                    <BreadcrumbLink render={<Link href={breadcrumb.href} />}>
+                      {breadcrumb.label}
+                    </BreadcrumbLink>
+                  )}
+                </BreadcrumbItem>
+              </Fragment>
             ))}
           </BreadcrumbList>
         </Breadcrumb>

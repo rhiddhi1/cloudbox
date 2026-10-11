@@ -61,10 +61,11 @@ export function FoldersTable({ folders: initialFolders }: { folders: FolderRow[]
         throw new Error("The star update response was invalid.");
       }
 
+      const isStarred = result.isStarred;
       setFolders((currentFolders) =>
         currentFolders.map((currentFolder) =>
           currentFolder.id === folder.id
-            ? { ...currentFolder, isStarred: result.isStarred }
+            ? { ...currentFolder, isStarred }
             : currentFolder,
         ),
       );

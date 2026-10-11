@@ -171,6 +171,7 @@ export function DataTable({ data: initialData }: { data: RecentItem[] }) {
                               title="View"
                               variant="ghost"
                               size="icon"
+                              nativeButton={false}
                               render={
                                 <a
                                   href={item.fileUrl}
@@ -186,6 +187,7 @@ export function DataTable({ data: initialData }: { data: RecentItem[] }) {
                               title="Download"
                               variant="ghost"
                               size="icon"
+                              nativeButton={false}
                               render={
                                 <a
                                   href={downloadUrl.toString()}
