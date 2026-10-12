@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Download, Eye, Star, StarOff, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-type FolderRow = {
+export type FolderRow = {
   id: string;
   name: string;
   size: number;
@@ -44,6 +44,10 @@ export function FoldersTable({
   const [folders, setFolders] = useState(initialFolders);
   const [pendingFolderId, setPendingFolderId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setFolders(initialFolders);
+  }, [initialFolders]);
 
   async function toggleStar(folder: FolderRow) {
     setPendingFolderId(folder.id);

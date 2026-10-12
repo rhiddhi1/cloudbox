@@ -1,4 +1,4 @@
-import { FoldersTable } from "@/components/folders-table";
+import { FolderManager } from "@/components/folder-manager";
 import { db } from "@/lib/db";
 import { files } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
@@ -33,14 +33,7 @@ export default async function FoldersPage() {
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:p-6">
-      <div>
-        <h1 className="text-2xl font-semibold">Folders</h1>
-        <p className="text-sm text-muted-foreground">
-          Folders in your account.
-        </p>
-      </div>
-
-      <FoldersTable folders={folders} />
+      <FolderManager folders={folders} userId={userId} />
     </main>
   );
 }
