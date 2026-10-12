@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Star, StarOff, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { Download, Eye, Star, StarOff, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -17,6 +18,8 @@ type FolderRow = {
   name: string;
   size: number;
   type: string;
+  fileUrl: string;
+  isFolder: boolean;
   isStarred: boolean;
 };
 
@@ -33,7 +36,11 @@ function getErrorMessage(result: unknown, fallback: string) {
   return fallback;
 }
 
-export function FoldersTable({ folders: initialFolders }: { folders: FolderRow[] }) {
+export function FoldersTable({
+  folders: initialFolders,
+}: {
+  folders: FolderRow[];
+}) {
   const [folders, setFolders] = useState(initialFolders);
   const [pendingFolderId, setPendingFolderId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -126,10 +133,25 @@ export function FoldersTable({ folders: initialFolders }: { folders: FolderRow[]
             {folders.length > 0 ? (
               folders.map((folder) => {
                 const isPending = pendingFolderId === folder.id;
+                const downloadUrl = folder.isFolder
+                  ? null
+                  : new URL(folder.fileUrl);
+                downloadUrl?.searchParams.set("ik-attachment", "true");
 
                 return (
                   <TableRow key={folder.id}>
-                    <TableCell className="font-medium">{folder.name}</TableCell>
+                    <TableCell className="font-medium">
+                      {folder.isFolder ? (
+                        <Link
+                          className="hover:underline"
+                          href={`/dashboard/folders/${folder.id}`}
+                        >
+                          {folder.name}
+                        </Link>
+                      ) : (
+                        folder.name
+                      )}
+                    </TableCell>
                     <TableCell>{folder.size}</TableCell>
                     <TableCell>{folder.type}</TableCell>
                     <TableCell className="font-mono text-xs">
@@ -137,6 +159,41 @@ export function FoldersTable({ folders: initialFolders }: { folders: FolderRow[]
                     </TableCell>
                     <TableCell>
                       <div className="flex justify-end gap-1">
+                        {!folder.isFolder && downloadUrl && (
+                          <>
+                            <Button
+                              aria-label={`View ${folder.name}`}
+                              title="View"
+                              variant="ghost"
+                              size="icon"
+                              nativeButton={false}
+                              render={
+                                <a
+                                  href={folder.fileUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                />
+                              }
+                            >
+                              <Eye />
+                            </Button>
+                            <Button
+                              aria-label={`Download ${folder.name}`}
+                              title="Download"
+                              variant="ghost"
+                              size="icon"
+                              nativeButton={false}
+                              render={
+                                <a
+                                  href={downloadUrl.toString()}
+                                  download={folder.name}
+                                />
+                              }
+                            >
+                              <Download />
+                            </Button>
+                          </>
+                        )}
                         <Button
                           aria-label={
                             folder.isStarred
@@ -153,7 +210,11 @@ export function FoldersTable({ folders: initialFolders }: { folders: FolderRow[]
                         </Button>
                         <Button
                           aria-label={`Delete ${folder.name}`}
-                          title="Move folder to trash"
+                          title={
+                            folder.isFolder
+                              ? "Move folder to trash"
+                              : "Move to trash"
+                          }
                           variant="ghost"
                           size="icon"
                           disabled={isPending}

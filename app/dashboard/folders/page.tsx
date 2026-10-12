@@ -18,6 +18,8 @@ export default async function FoldersPage() {
       name: files.name,
       size: files.size,
       type: files.type,
+      fileUrl: files.fileUrl,
+      isFolder: files.isFolder,
       isStarred: files.isStarred,
     })
     .from(files)
