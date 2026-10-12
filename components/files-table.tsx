@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { formatFileSize } from "@/lib/format-file-size";
 
 type FileRow = {
   id: string;
@@ -29,21 +30,6 @@ type FileRow = {
 type FilesTableProps = {
   files: FileRow[];
 };
-
-function formatFileSize(size: number) {
-  if (size < 1024) return `${size} B`;
-
-  const units = ["KB", "MB", "GB", "TB"];
-  let value = size / 1024;
-  let unitIndex = 0;
-
-  while (value >= 1024 && unitIndex < units.length - 1) {
-    value /= 1024;
-    unitIndex += 1;
-  }
-
-  return `${value.toFixed(1)} ${units[unitIndex]}`;
-}
 
 function getErrorMessage(result: unknown, fallback: string) {
   if (

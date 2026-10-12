@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Download, Eye, Star, StarOff, Trash2 } from "lucide-react";
+import { formatFileSize } from "@/lib/format-file-size";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -156,7 +157,7 @@ export function FoldersTable({
                         folder.name
                       )}
                     </TableCell>
-                    <TableCell>{folder.size}</TableCell>
+                    <TableCell>{formatFileSize(folder.size)}</TableCell>
                     <TableCell>{folder.type}</TableCell>
                     <TableCell className="font-mono text-xs">
                       {folder.id}

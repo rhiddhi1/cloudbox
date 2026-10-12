@@ -3,7 +3,7 @@ import { files } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
 import ImageKit from "@imagekit/nodejs";
 import { error } from "console";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 import { v4 as uuidv4 } from "uuid";
 import { tr } from "zod/v4/locales";
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (formParentId) {
-      await db
+      const [parentFolder] = await db
         .select()
         .from(files)
         .where(
@@ -43,6 +43,13 @@ export async function POST(req: NextRequest) {
             eq(files.isFolder, true),
           ),
         );
+
+      if (!parentFolder) {
+        return NextResponse.json(
+          { error: "Parent folder not found" },
+          { status: 404 },
+        );
+      }
     }
 
     if (!formParentId) {
@@ -93,6 +100,18 @@ export async function POST(req: NextRequest) {
     };
 
     const [newFile] = await db.insert(files).values(fileData).returning();
+
+    await db
+      .update(files)
+      .set({ size: sql`${files.size} + ${newFile.size}` })
+      .where(
+        and(
+          eq(files.id, formParentId),
+          eq(files.userId, userId),
+          eq(files.isFolder, true),
+          eq(files.isTrash, false),
+        ),
+      );
 
     return NextResponse.json(newFile);
   } catch (error) {

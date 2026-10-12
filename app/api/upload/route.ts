@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { files } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -78,6 +78,20 @@ export async function POST(req: NextRequest) {
     };
 
     const [newfile] = await db.insert(files).values(fileData).returning();
+
+    if (parentId) {
+      await db
+        .update(files)
+        .set({ size: sql`${files.size} + ${newfile.size}` })
+        .where(
+          and(
+            eq(files.id, parentId),
+            eq(files.userId, userId),
+            eq(files.isFolder, true),
+            eq(files.isTrash, false),
+          ),
+        );
+    }
 
     return NextResponse.json(newfile);
   } catch (error) {
