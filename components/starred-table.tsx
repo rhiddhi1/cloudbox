@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Download, Eye, StarOff, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -139,7 +140,18 @@ export function StarredTable({
 
                 return (
                   <TableRow key={file.id}>
-                    <TableCell className="font-medium">{file.name}</TableCell>
+                    <TableCell className="font-medium">
+                      {file.isFolder ? (
+                        <Link
+                          className="hover:underline"
+                          href={`/dashboard/folders/${file.id}`}
+                        >
+                          {file.name}
+                        </Link>
+                      ) : (
+                        file.name
+                      )}
+                    </TableCell>
                     <TableCell>{formatFileSize(file.size)}</TableCell>
                     <TableCell>{file.type}</TableCell>
                     <TableCell className="font-mono text-xs">

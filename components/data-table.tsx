@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Download, Eye, Star, StarOff, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -156,7 +157,18 @@ export function DataTable({ data: initialData }: { data: RecentItem[] }) {
 
                 return (
                   <TableRow key={item.id}>
-                    <TableCell className="font-medium">{item.name}</TableCell>
+                    <TableCell className="font-medium">
+                      {item.isFolder ? (
+                        <Link
+                          className="hover:underline"
+                          href={`/dashboard/folders/${item.id}`}
+                        >
+                          {item.name}
+                        </Link>
+                      ) : (
+                        item.name
+                      )}
+                    </TableCell>
                     <TableCell>{formatFileSize(item.size)}</TableCell>
                     <TableCell>{item.type}</TableCell>
                     <TableCell className="font-mono text-xs">
