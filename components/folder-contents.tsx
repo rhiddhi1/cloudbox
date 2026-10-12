@@ -74,7 +74,7 @@ export function FolderContents({ folderId }: { folderId: string }) {
 
       try {
         const response = await fetch(
-          `/api/folders?parentId=${encodeURIComponent(folderId)}`,
+          `/api/folders/contents?parentId=${encodeURIComponent(folderId)}`,
           { signal: controller.signal },
         );
         const result: unknown = await response.json();
