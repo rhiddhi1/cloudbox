@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { files } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
-import { error } from "console";
+import { and, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -13,10 +13,27 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
 
-    const { ImageKit, userId: clientUserId } = body;
+    const {
+      ImageKit,
+      userId: clientUserId,
+      parentId = null,
+    } = body;
 
     if (userId !== clientUserId) {
       return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    }
+
+    if (
+      parentId !== null &&
+      (typeof parentId !== "string" ||
+        !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+          parentId,
+        ))
+    ) {
+      return NextResponse.json(
+        { error: "Invalid parent folder" },
+        { status: 400 },
+      );
     }
 
     if (!ImageKit || !ImageKit.url)
@@ -24,6 +41,27 @@ export async function POST(req: NextRequest) {
         { error: "Invalid file upload data" },
         { status: 400 },
       );
+
+    if (parentId) {
+      const [parentFolder] = await db
+        .select({ id: files.id })
+        .from(files)
+        .where(
+          and(
+            eq(files.id, parentId),
+            eq(files.userId, userId),
+            eq(files.isFolder, true),
+            eq(files.isTrash, false),
+          ),
+        );
+
+      if (!parentFolder) {
+        return NextResponse.json(
+          { error: "Parent folder not found" },
+          { status: 404 },
+        );
+      }
+    }
 
     const fileData = {
       name: ImageKit.name,
@@ -33,7 +71,7 @@ export async function POST(req: NextRequest) {
       fileUrl: ImageKit.url,
       thumbnailUrl: ImageKit.thumbnail_url,
       userId: userId,
-      parentId: null,
+      parentId,
       isFolder: false,
       isStarred: false,
       isTrash: false,

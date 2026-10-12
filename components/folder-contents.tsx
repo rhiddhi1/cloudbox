@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { FolderActions } from "@/components/folder-actions";
 import { FoldersTable } from "@/components/folders-table";
 
 type FolderItem = {
@@ -61,9 +62,16 @@ function isFolderContentsResponse(
   );
 }
 
-export function FolderContents({ folderId }: { folderId: string }) {
+export function FolderContents({
+  folderId,
+  userId,
+}: {
+  folderId: string;
+  userId: string;
+}) {
   const [contents, setContents] = useState<FolderContentsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -109,17 +117,24 @@ export function FolderContents({ folderId }: { folderId: string }) {
     void loadFolderContents();
 
     return () => controller.abort();
-  }, [folderId]);
+  }, [folderId, refreshKey]);
 
   return (
     <main className="flex flex-1 flex-col gap-4 p-4 lg:p-6">
-      <div>
-        <h1 className="text-2xl font-semibold">
-          {contents?.folder.name ?? "Folder"}
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          Files and folders in this folder.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold">
+            {contents?.folder.name ?? "Folder"}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Files and folders in this folder.
+          </p>
+        </div>
+        <FolderActions
+          folderId={folderId}
+          userId={userId}
+          onItemCreated={() => setRefreshKey((key) => key + 1)}
+        />
       </div>
       {error ? (
         <p className="text-sm text-destructive" role="alert">
