@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
     }
 
     const [folder] = await db
-      .select({ id: files.id, name: files.name })
+      .select({ id: files.id, name: files.name, parentId: files.parentId })
       .from(files)
       .where(
         and(
@@ -38,6 +38,33 @@ export async function GET(request: NextRequest) {
 
     if (!folder) {
       return NextResponse.json({ error: "Folder not found" }, { status: 404 });
+    }
+
+    const userFolders = await db
+      .select({
+        id: files.id,
+        name: files.name,
+        parentId: files.parentId,
+      })
+      .from(files)
+      .where(
+        and(
+          eq(files.userId, userId),
+          eq(files.isFolder, true),
+          eq(files.isTrash, false),
+        ),
+      );
+    const foldersById = new Map(userFolders.map((item) => [item.id, item]));
+    const folderPath = [];
+    let currentFolder: (typeof userFolders)[number] | undefined = folder;
+    const visitedFolderIds = new Set<string>();
+
+    while (currentFolder && !visitedFolderIds.has(currentFolder.id)) {
+      visitedFolderIds.add(currentFolder.id);
+      folderPath.unshift({ id: currentFolder.id, name: currentFolder.name });
+      currentFolder = currentFolder.parentId
+        ? foldersById.get(currentFolder.parentId)
+        : undefined;
     }
 
     const childFiles = await db
@@ -59,7 +86,11 @@ export async function GET(request: NextRequest) {
         ),
       );
 
-    return NextResponse.json({ folder, files: childFiles });
+    return NextResponse.json({
+      folder: { id: folder.id, name: folder.name },
+      folderPath,
+      files: childFiles,
+    });
   } catch (error) {
     console.error("Error fetching folder contents:", error);
     return NextResponse.json(

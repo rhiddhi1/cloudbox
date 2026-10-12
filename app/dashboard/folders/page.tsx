@@ -2,7 +2,7 @@ import { FolderManager } from "@/components/folder-manager";
 import { db } from "@/lib/db";
 import { files } from "@/lib/db/schema";
 import { auth } from "@clerk/nextjs/server";
-import { eq, and } from "drizzle-orm";
+import { eq, and, isNull } from "drizzle-orm";
 import { redirect } from "next/navigation";
 
 export default async function FoldersPage() {
@@ -28,6 +28,7 @@ export default async function FoldersPage() {
         eq(files.userId, userId),
         eq(files.isFolder, true),
         eq(files.isTrash, false),
+        isNull(files.parentId),
       ),
     );
 
