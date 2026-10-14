@@ -18,6 +18,7 @@ import { signInSchema } from "@/schemas/signInSchema";
 import { useSignIn } from "@clerk/nextjs/legacy";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { useForm } from "react-hook-form";
@@ -273,12 +274,12 @@ export default function SignInForm() {
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
-                  <a
-                    href="#"
+                  <Link
+                    href="/forgot-password"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
                     Forgot your password?
-                  </a>
+                  </Link>
                 </div>
                 <Input
                   id="password"

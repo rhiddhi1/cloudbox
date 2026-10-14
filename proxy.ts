@@ -1,7 +1,14 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-const publicRoutes = ["/", "/sign-in", "/sign-up", "/sso-callback", "/__clerk"];
+const publicRoutes = [
+  "/",
+  "/sign-in",
+  "/sign-up",
+  "/forgot-password",
+  "/sso-callback",
+  "/__clerk",
+];
 const authEntryRoutes = ["/", "/sign-in", "/sign-up"];
 
 function isPublicRoute(pathname: string) {
