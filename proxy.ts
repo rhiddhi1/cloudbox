@@ -9,7 +9,7 @@ const publicRoutes = [
   "/sso-callback",
   "/__clerk",
 ];
-const authEntryRoutes = ["/", "/sign-in", "/sign-up"];
+const authEntryRoutes = ["/", "/sign-in", "/sign-up", "/forgot-password"];
 
 function isPublicRoute(pathname: string) {
   return publicRoutes.some((route) =>
